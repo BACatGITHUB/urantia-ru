@@ -45,6 +45,22 @@ do
          fi
          if ((i == 139 && sec > 9)) ; then
             lineid[$linenum]="p$p $((sec+1)):${paridx}"
+         elif ((i == 144)); then
+            if ((sec == 5 && paridx >= 11 && paridx <= 23)); then
+               lineid[$linenum]="p$p ${sec}:$((paridx+1))"
+            elif ((sec == 5 && paridx >= 24 && paridx <= 35)); then
+               lineid[$linenum]="p$p ${sec}:$((paridx+2))"
+            elif ((sec == 5 && paridx >= 36 && paridx <= 50)); then
+               lineid[$linenum]="p$p ${sec}:$((paridx+3))"
+            elif ((sec == 5 && paridx >= 51 && paridx <= 68)); then
+               lineid[$linenum]="p$p ${sec}:$((paridx+4))"
+            elif ((sec == 5 && paridx >= 69 && paridx <= 81)); then
+               lineid[$linenum]="p$p ${sec}:$((paridx+5))"
+            elif ((sec == 5 && paridx >= 82)); then
+               lineid[$linenum]="p$p ${sec}:$((paridx+6))"
+            else
+               lineid[$linenum]="p$p ${sec}:${paridx}"
+            fi
          else
             lineid[$linenum]="p$p ${sec}:${paridx}"
          fi
@@ -80,8 +96,7 @@ do
                 verse=$(echo "${lineid[$linenum]}" | sed -ne "s%p... [0-9][0-9]*:\([0-9][0-9]*\)%\1%p")
                 ((verse--))
                 ntext=$(echo $text | sed -e "s%^\([0-9][0-9]*\)\. %\\\ublistelem{\1.}\\\bibnobreakspace %")
-                if grep -q " $i:$chap.$verse$" ${PARCLUSTER_FILE}
-                then
+                if grep -q " $i:$chap.$verse$" ${PARCLUSTER_FILE} && [[ "$ntext" != *"\ublistelem"* ]] ; then
                    echo -nE "\vs ${lineid[$linenum]} \pc ${ntext}" >> tex/p${p}.tex
                 else
                    echo -nE "\vs ${lineid[$linenum]} ${ntext}" >> tex/p${p}.tex
